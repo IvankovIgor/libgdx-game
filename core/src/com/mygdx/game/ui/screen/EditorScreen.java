@@ -17,8 +17,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.mygdx.game.GdxGame;
-import com.strongjoshua.console.Console;
-import com.strongjoshua.console.GUIConsole;
+import com.mygdx.game.ui.Console;
 
 import static com.mygdx.game.GdxGame.HEIGHT;
 import static com.mygdx.game.GdxGame.WIDTH;
@@ -30,6 +29,7 @@ public class EditorScreen implements Screen {
     private ModelBatch modelBatch;
     private CameraInputController cameraInputController;
     private Environment environment;
+    //    private Console console;
     private Console console;
 
     public EditorScreen(GdxGame game) {
@@ -42,12 +42,13 @@ public class EditorScreen implements Screen {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1, 1, 1, 1));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-        this.console = new GUIConsole();
-        this.console.setPosition(0, 0);
-        this.console.setSize(300, 300);
-        this.console.enableSubmitButton(true);
-        this.console.getWindow().setMovable(false);
-        this.console.log("TEST");
+        this.console = new Console(message -> System.out.println("Handle: " + message));
+//        this.console = new GUIConsole();
+//        this.console.setPosition(0, 0);
+//        this.console.setSize(300, 300);
+//        this.console.enableSubmitButton(true);
+//        this.console.getWindow().setMovable(false);
+//        this.console.log("TEST");
 
         modelBatch = new ModelBatch();
 
@@ -61,14 +62,14 @@ public class EditorScreen implements Screen {
             @Override
             public boolean keyDown(int keycode) {
                 if (keycode == Input.Keys.C) {
-                    console.setVisible(true);
-                    Gdx.input.setInputProcessor(console.getInputProcessor());
+//                    console.setVisible(true);
+//                    Gdx.input.setInputProcessor(console.getInputProcessor());
                 }
                 return super.keyDown(keycode);
             }
         };
         cameraInputController.autoUpdate = true;
-        Gdx.input.setInputProcessor(cameraInputController);
+        Gdx.input.setInputProcessor(console.getInputProcessor());
     }
 
     @Override
