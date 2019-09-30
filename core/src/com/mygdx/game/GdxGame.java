@@ -2,9 +2,9 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
-import com.mygdx.game.screen.EditorScreen;
-import com.mygdx.game.screen.MainScreen;
-import com.mygdx.game.screen.MenuScreen;
+import com.mygdx.game.ui.screen.EditorScreen;
+import com.mygdx.game.ui.screen.MainScreen;
+import com.mygdx.game.ui.screen.MenuScreen;
 
 public class GdxGame extends Game {
 

@@ -1,6 +1,7 @@
-package com.mygdx.game.screen;
+package com.mygdx.game.ui.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,10 +14,11 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.mygdx.game.GdxGame;
+import com.strongjoshua.console.Console;
+import com.strongjoshua.console.GUIConsole;
 
 import static com.mygdx.game.GdxGame.HEIGHT;
 import static com.mygdx.game.GdxGame.WIDTH;
@@ -26,9 +28,9 @@ public class EditorScreen implements Screen {
     private final GdxGame game;
     private PerspectiveCamera camera;
     private ModelBatch modelBatch;
-    private ModelInstance model;
     private CameraInputController cameraInputController;
     private Environment environment;
+    private Console console;
 
     public EditorScreen(GdxGame game) {
         this.game = game;
@@ -40,6 +42,13 @@ public class EditorScreen implements Screen {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1, 1, 1, 1));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
+        this.console = new GUIConsole();
+        this.console.setPosition(0, 0);
+        this.console.setSize(300, 300);
+        this.console.enableSubmitButton(true);
+        this.console.getWindow().setMovable(false);
+        this.console.log("TEST");
+
         modelBatch = new ModelBatch();
 
         camera = new PerspectiveCamera(67, WIDTH, HEIGHT);
@@ -48,23 +57,18 @@ public class EditorScreen implements Screen {
         camera.far = 100;
         camera.near = 1;
 
-        cameraInputController = new CameraInputController(camera);
+        cameraInputController = new CameraInputController(camera) {
+            @Override
+            public boolean keyDown(int keycode) {
+                if (keycode == Input.Keys.C) {
+                    console.setVisible(true);
+                    Gdx.input.setInputProcessor(console.getInputProcessor());
+                }
+                return super.keyDown(keycode);
+            }
+        };
         cameraInputController.autoUpdate = true;
         Gdx.input.setInputProcessor(cameraInputController);
-
-        ObjLoader loader = new ObjLoader();
-//        model = new ModelInstance(loader.loadModel(Gdx.files.internal("Teapot.obj")));
-        model = new ModelInstance(new ModelBuilder().createBox(
-                5,
-                5,
-                5,
-                new Material(
-                        ColorAttribute.createDiffuse(Color.GRAY),
-                        ColorAttribute.createSpecular(Color.BLUE),
-                        FloatAttribute.createShininess(16f)
-                ),
-                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
-        ));
     }
 
     @Override
@@ -74,8 +78,10 @@ public class EditorScreen implements Screen {
         cameraInputController.update();
 
         modelBatch.begin(camera);
-        modelBatch.render(model, environment);
+        modelBatch.render(createTestBox(), environment);
         modelBatch.end();
+
+        console.draw();
     }
 
     @Override
@@ -101,5 +107,19 @@ public class EditorScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    private ModelInstance createTestBox() {
+        return new ModelInstance(new ModelBuilder().createBox(
+                5,
+                5,
+                5,
+                new Material(
+                        ColorAttribute.createDiffuse(Color.GRAY),
+                        ColorAttribute.createSpecular(Color.BLUE),
+                        FloatAttribute.createShininess(16f)
+                ),
+                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
+        ));
     }
 }

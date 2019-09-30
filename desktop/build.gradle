@@ -1,8 +1,9 @@
 apply plugin: "java"
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = ["../core/assets"]
+compileJava.options.encoding = 'UTF-8'
 
 project.ext.mainClassName = "com.mygdx.game.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
